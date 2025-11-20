@@ -1,6 +1,6 @@
 # BUSCO version is: 6.0.0 
 # The lineage dataset is: alteromonas_odb12 (Creation date: 2025-05-14, number of genomes: 24, number of BUSCOs: 1828)
-# Summarized benchmarking in BUSCO notation for file /projectnb/bf528/students/addisony/project1-week3-template-addddisonnnn/work/56/06a50dfc623682ae325804a581ebd3/Alteromonas_macleodii.sorted.fasta
+# Summarized benchmarking in BUSCO notation for file /addddisonnnn/work/56/06a50dfc623682ae325804a581ebd3/Alteromonas_macleodii.sorted.fasta
 # BUSCO was run in mode: prok_genome_prod
 # Gene predictor used: prodigal
 
