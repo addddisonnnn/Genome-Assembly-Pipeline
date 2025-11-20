@@ -13,10 +13,25 @@ include {QUAST as QUAST_UNPOLISHED} from './modules/quast'
 include {PROKKA} from './modules/prokka'
 include {BUSCO_PLOT} from './modules/busco_plot'
 
-process {
-
-}
-
 workflow {
+    // This will make a channel with the information needed for the long reads
+    Channel.fromPath(params.bac_samples)
+    | splitCsv(header: true)
+    | map { row -> tuple(row.name, file(row.nano))}
+    | set { longread_ch }
 
+    // Use similar logic and make a channel for the short reads
+    Channel.fromPath(params.bac_samples)
+    | splitCsv(header: true)
+    | map { row -> tuple(row.name, file(row.short1), file(row.short2))}
+    | set { shortread_ch }
+
+    // Run QC on the short reads
+    FASTQC(shortread_ch)
+
+    // Filter the long reads
+    FILTLONGER(longread_ch)
+
+    // Pass the filtered reads to the assembly tool
+    FLYE(FILTLONGER.out)
 }
