@@ -14,6 +14,7 @@ include {PROKKA} from './modules/prokka'
 include {BUSCO_PLOT} from './modules/busco_plot'
 
 workflow {
+    // SECTION 1 PROCESSES
     // This will make a channel with the information needed for the long reads
     Channel.fromPath(params.bac_samples)
     | splitCsv(header: true)
@@ -34,4 +35,18 @@ workflow {
 
     // Pass the filtered reads to the assembly tool
     FLYE(FILTLONGER.out)
+
+    // SECTION 2 PROCESSES
+    // Create an index of the assembly
+    BOWTIE2_INDEX(FLYE.out)
+
+    //Align the short reads to the assembly
+    BOWTIE2_ALIGN(FASTQC.out.reads, BOWTIE2_INDEX.out)
+
+    //sort and index the alignments
+    SAMTOOLS_SORT(BOWTIE2_ALIGN,out)
+
+    //shore read polishing using the alignments
+    PILON(FLYE.out, SAMTOOLS_SORT.out)
+
 }
