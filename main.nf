@@ -49,4 +49,26 @@ workflow {
     //shore read polishing using the alignments
     PILON(FLYE.out, SAMTOOLS_SORT.out)
 
+    // SECTION 3 PROCESSES
+    // Annotate the polished assembly using Prokka
+    PROKKA(PILON.out)
+
+    // Run BUSCO on the Polished Assembly
+    BUSCO(PILON.out)
+
+    //Channel for the reference genome
+    Channel.of(params.ref_genome)
+    | set {gcf_id}
+
+    // Download the canonical reference genome 
+    NCBI_DATASETS(gcf_id)
+
+    // Run QUAST comparing the final assembly with the reference genome
+    QUAST(PILON.out, NCBI_DATASETS.out)
+
+    // Run QUAST on the unpolished assembly
+    QUAST_UNPOLISHED(FLYE.out, NCBI_DATASETS.out)
+
+    // Run BUSCO PLOT on the BUSCO output
+    BUSCO_PLOT(BUSCO.out)
 }
